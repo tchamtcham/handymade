@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-// Remove any duplicate schema declaration and use this single schema definition:
+// User schema with notification settings embedded in the schema
 const userSchema = new mongoose.Schema({
   email: { 
     type: String, 
@@ -40,6 +40,13 @@ const userSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  // Notification settings embedded in the user schema
+  notificationSettings: {
+    emailEnabled: { type: Boolean, default: true },
+    smsEnabled: { type: Boolean, default: false },
+    inAppEnabled: { type: Boolean, default: true },
+    emergencyEnabled: { type: Boolean, default: true }
   }
 }, { 
   discriminatorKey: 'role',

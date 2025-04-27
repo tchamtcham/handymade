@@ -9,6 +9,8 @@ const bookingRoutes = require('./routes/bookingRoutes');
 const provider = require('./routes/provider');
 
 
+
+
 const app = express();
 
 
@@ -76,6 +78,23 @@ app.use('/api/admin', adminDashboardRoute);
 
 const customerRoutes = require('./routes/customerRoutes');
 app.use('/api/customers', customerRoutes);
+
+const notificationRoutes = require('./routes/notificationRoutes');
+app.use('/notifications', notificationRoutes);
+
+
+const serviceRoutes = require('./routes/serviceRoutes');
+app.use('/api/services', serviceRoutes);
+
+
+const bookingManagementRoutes = require('./routes/adminSettings');
+app.use('/api', bookingManagementRoutes);
+
+
+const adminSettingsRoutes = require('./routes/adminSettings');
+app.use('/admin-settings', adminSettingsRoutes);
+
+// Add this to your server.js
 
 
 

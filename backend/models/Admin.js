@@ -1,4 +1,4 @@
-// /backend/models/Admin.js
+// backend/models/Admin.js
 const mongoose = require('mongoose');
 
 const adminSchema = new mongoose.Schema({
@@ -25,8 +25,13 @@ const adminSchema = new mongoose.Schema({
   },
   isVerified: {
     type: Boolean,
-    default: true, // Admins are typically verified by default
-  }
+    default: true,
+  },
+  status: { // <-- NEW FIELD
+    type: String,
+    enum: ['active', 'inactive'],
+    default: 'active',
+  },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Admin', adminSchema);

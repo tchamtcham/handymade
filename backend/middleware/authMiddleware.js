@@ -32,4 +32,13 @@ const isAdmin = async (req, res, next) => {
   next();
 };
 
-module.exports = { authMiddleware, isAdmin };
+const protect = (req, res, next) => {
+  // Simple protection - you should replace this with your actual auth logic
+  if (!req.user) {
+    return res.status(401).json({ message: 'Not authorized' });
+  }
+  next();
+};
+
+
+module.exports = { authMiddleware, isAdmin, protect };

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { FiMail, FiPhone, FiBell, FiAlertTriangle, FiSearch, FiFilter, FiClock } from 'react-icons/fi';
+import React, { useState, useEffect } from 'react';
+import { FiMail, FiPhone, FiBell, FiAlertTriangle, FiSearch } from 'react-icons/fi';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const NotificationManagement = () => {
@@ -11,25 +11,23 @@ const NotificationManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [notificationType, setNotificationType] = useState('all');
   const [timeRange, setTimeRange] = useState('30days');
+  const [notificationData, setNotificationData] = useState([]);
+  
+  // Fetch notifications data from the API
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const response = await fetch('/api/notifications'); // Replace with your actual API endpoint
+        const data = await response.json();
+        setNotificationData(data); // Assuming the response contains the notifications data
+      } catch (error) {
+        console.error("Error fetching notifications data:", error);
+      }
+    };
 
-  const notificationData = [
-    { id: 1, type: 'email', subject: 'Booking Confirmation', audience: 'Customers', sent: '2023-06-15 09:23:45', status: 'delivered' },
-    { id: 2, type: 'sms', subject: 'Service Reminder', audience: 'Taskers', sent: '2023-06-14 14:12:33', status: 'delivered' },
-    { id: 3, type: 'in-app', subject: 'New Review Received', audience: 'Taskers', sent: '2023-06-14 10:45:12', status: 'read' },
-    { id: 4, type: 'email', subject: 'Payment Receipt', audience: 'Customers', sent: '2023-06-13 18:30:05', status: 'failed' },
-    { id: 5, type: 'in-app', subject: 'New Message', audience: 'All Users', sent: '2023-06-12 22:15:42', status: 'read' },
-    { id: 6, type: 'sms', subject: 'Emergency Maintenance', audience: 'All Users', sent: '2023-06-10 08:05:21', status: 'delivered' },
-  ];
-
-  const performanceData = [
-    { name: 'Jan', delivery: 95, open: 65, click: 30 },
-    { name: 'Feb', delivery: 97, open: 70, click: 35 },
-    { name: 'Mar', delivery: 98, open: 75, click: 40 },
-    { name: 'Apr', delivery: 96, open: 72, click: 38 },
-    { name: 'May', delivery: 99, open: 80, click: 45 },
-    { name: 'Jun', delivery: 100, open: 85, click: 50 },
-  ];
-
+    fetchNotifications();
+  }, []);
+  
   const filteredNotifications = notificationData.filter(notification => {
     const matchesSearch = notification.subject.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = notificationType === 'all' || notification.type === notificationType;
@@ -151,154 +149,55 @@ const NotificationManagement = () => {
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
             <h2 className="text-lg font-semibold text-gray-800 mb-4 md:mb-0">Recent Notifications</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FiSearch className="text-gray-400" />
-                </div>
-                <input
-                  type="text"
-                  placeholder="Search Subject"
-                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
-              
-              <select
-                className="border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 px-4 py-2 w-full"
-                value={notificationType}
-                onChange={(e) => setNotificationType(e.target.value)}
-              >
-                <option value="all">All Types</option>
-                <option value="email">Email</option>
-                <option value="sms">SMS</option>
-                <option value="in-app">In-App</option>
-              </select>
-              
-              <select
-                className="border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 px-4 py-2 w-full"
-                value={timeRange}
-                onChange={(e) => setTimeRange(e.target.value)}
-              >
-                <option value="30days">Last 30 Days</option>
-                <option value="7days">Last 7 Days</option>
-                <option value="today">Today</option>
-              </select>
+            <div className="flex space-x-4 mb-4 md:mb-0">
+              <button className="text-sm text-gray-600 hover:text-gray-800" onClick={() => setNotificationType('all')}>All</button>
+              <button className="text-sm text-gray-600 hover:text-gray-800" onClick={() => setNotificationType('email')}>Email</button>
+              <button className="text-sm text-gray-600 hover:text-gray-800" onClick={() => setNotificationType('sms')}>SMS</button>
+              <button className="text-sm text-gray-600 hover:text-gray-800" onClick={() => setNotificationType('inApp')}>In-App</button>
+              <button className="text-sm text-gray-600 hover:text-gray-800" onClick={() => setNotificationType('emergency')}>Emergency</button>
             </div>
           </div>
-          
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Type
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Subject
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Audience
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Sent
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {filteredNotifications.map((notification) => (
-                  <tr key={notification.id}>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        {notification.type === 'email' && (
-                          <FiMail className="text-blue-500 mr-2" />
-                        )}
-                        {notification.type === 'sms' && (
-                          <FiPhone className="text-green-500 mr-2" />
-                        )}
-                        {notification.type === 'in-app' && (
-                          <FiBell className="text-purple-500 mr-2" />
-                        )}
-                        <span className="capitalize">{notification.type}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {notification.subject}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {notification.audience}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {notification.sent}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        notification.status === 'delivered' ? 'bg-green-100 text-green-800' :
-                        notification.status === 'read' ? 'bg-blue-100 text-blue-800' :
-                        'bg-red-100 text-red-800'
-                      }`}>
-                        {notification.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button className="text-blue-600 hover:text-blue-900 mr-3">Resend</button>
-                      <button className="text-gray-600 hover:text-gray-900">Details</button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+
+          {/* Search Bar */}
+          <div className="flex items-center mb-4">
+            <div className="relative w-full max-w-md">
+              <input 
+                type="text" 
+                className="w-full border border-gray-300 rounded-lg py-2 pl-10 pr-4 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                placeholder="Search notifications..."
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+              />
+              <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            </div>
+          </div>
+
+          {/* Notifications List */}
+          <div className="space-y-4">
+            {filteredNotifications.map(notification => (
+              <div key={notification.id} className="border-b border-gray-200 py-4">
+                <h4 className="text-sm font-semibold text-gray-800">{notification.subject}</h4>
+                <p className="text-sm text-gray-600">{notification.message}</p>
+                <div className="mt-2 text-sm text-gray-400">{notification.date}</div>
+              </div>
+            ))}
           </div>
         </div>
         
-        {/* Notification Performance Section */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-6">Notification Performance</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            <div className="bg-blue-50 rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-sm font-medium text-blue-800">Delivery Rate</h3>
-                <div className="p-2 rounded-full bg-blue-100 text-blue-600">
-                  <FiMail />
-                </div>
-              </div>
-              <p className="text-2xl font-bold text-blue-800 mt-2">98.7%</p>
-              <p className="text-xs text-blue-600 mt-1">+2.3% from last month</p>
-            </div>
-            
-            <div className="bg-green-50 rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-sm font-medium text-green-800">Open Rate</h3>
-                <div className="p-2 rounded-full bg-green-100 text-green-600">
-                  <FiBell />
-                </div>
-              </div>
-              <p className="text-2xl font-bold text-green-800 mt-2">78.2%</p>
-              <p className="text-xs text-green-600 mt-1">+5.1% from last month</p>
-            </div>
-            
-            <div className="bg-purple-50 rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-sm font-medium text-purple-800">Click-Through Rate</h3>
-                <div className="p-2 rounded-full bg-purple-100 text-purple-600">
-                  <FiAlertTriangle />
-                </div>
-              </div>
-              <p className="text-2xl font-bold text-purple-800 mt-2">42.5%</p>
-              <p className="text-xs text-purple-600 mt-1">+3.7% from last month</p>
-            </div>
+        {/* Analytics Section */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mt-8">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Notification Analytics</h3>
+          <div className="w-full h-72">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={notificationData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="sent" fill="#3b82f6" />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
-          
-
         </div>
       </div>
     </div>

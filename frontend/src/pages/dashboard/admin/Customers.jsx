@@ -11,7 +11,7 @@ const API_BASE_URL = 'http://localhost:5000/api'; // Adjust based on your backen
 
 const CustomerManagement = () => {
   // State management
-  const [activeView, setActiveView] = useState('customers');
+  const [activeView, setActiveView] = useState('Customers');
   const [activeTab, setActiveTab] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCustomers, setSelectedCustomers] = useState([]);
