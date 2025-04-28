@@ -8,6 +8,11 @@ const createAdminIfNotExists = require('./utils/adminSeeder'); // Import the see
 const bookingRoutes = require('./routes/bookingRoutes');
 const provider = require('./routes/provider');
 
+const profileRouter = require('./routes/Provider/profileRoutes');
+const bookingRouter = require('./routes/Provider/bookingRoutes');
+const dashboardRoutes = require('./routes/Provider/dashboardRoutes');
+const earningsRouter = require('./routes/Provider/earningsRoutes');
+
 
 
 
@@ -70,7 +75,7 @@ app.use('/api/providers', providerRoutes);
 app.use('/api/contact', require('./routes/contact'));
 //const subscribeRoute = require('./routes/subscribe');
 //app.use('/api/subscribe', subscribeRoute); 
-app.use('/api/provider', provider);
+app.use('/api/', provider);
 app.use('/api/contactPage', require('./routes/contactPage'));
 
 const adminDashboardRoute = require('./routes/adminDashboard');
@@ -95,6 +100,14 @@ const adminSettingsRoutes = require('./routes/adminSettings');
 app.use('/admin-settings', adminSettingsRoutes);
 
 // Add this to your server.js
+
+// Routes
+app.use('/api/profile', profileRouter);
+app.use('/api/providers/services', serviceRoutes);
+app.use('/api/bookings', bookingRouter);
+app.use('/api/earnings', earningsRouter);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/provider', dashboardRoutes);
 
 
 

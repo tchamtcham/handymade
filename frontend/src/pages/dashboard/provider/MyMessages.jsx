@@ -1,6 +1,6 @@
 import React from 'react'
 
-const MyTasks = () => {
+const MyMessages = () => {
   return (
     <div>
       
@@ -8,4 +8,4 @@ const MyTasks = () => {
   )
 }
 
-export default MyTasks
+export default MyMessages
